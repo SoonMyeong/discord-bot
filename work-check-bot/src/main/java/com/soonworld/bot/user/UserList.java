@@ -21,6 +21,10 @@ public class UserList {
         return completedUserList.contains(user);
     }
 
+    public boolean isFull() {
+        return completedUserList.size() == 5;
+    }
+
     public void clear() {
         completedUserList.clear();
     }

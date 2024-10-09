@@ -30,20 +30,20 @@ public class MonitoringListener extends ListenerAdapter {
                 Objects.requireNonNull(channel).sendMessage(name + "님 과제하느라 수고했어요^^, 진실의 방은 안가셔도 되겠어").queue();
             }
         }
-        final var test = event.getMessage().getContentRaw();
 
         if("숙제검사".equals(event.getMessage().getContentRaw())) {
             report(event);
         }
-        if("검사완료".equals(event.getMessage().getContentRaw())) {
+        if("검사완료".equals(event.getMessage().getContentRaw()) && "soon".equals(event.getAuthor().getGlobalName())) {
             userList.clear();
+            event.getChannel().sendMessage("검사가 완료되어 제출인원을 초기화 합니다.").queue();
         }
     }
 
     private void report(@NotNull MessageReceivedEvent event) {
         final var savedUserList = config.getUserList();
-        if(savedUserList.isEmpty()) {
-            event.getChannel().sendMessage("모두 숙제를 완료 했습니다.");
+        if(userList.isFull()) {
+            event.getChannel().sendMessage("모두 숙제를 완료 했습니다.").queue();
         }
         savedUserList.forEach(u -> {
             if(!userList.contains(u)) {
