@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 import java.util.Objects;
 
 public class SlashEventListener extends ListenerAdapter {
@@ -32,16 +33,18 @@ public class SlashEventListener extends ListenerAdapter {
     private void completedHomework(@NotNull SlashCommandInteractionEvent event) {
         final var user = event.getOption("user").getAsString();
         var count = 0;
-        for (String s : AppConfig.userMap.values()) {
-            if (s.equals(user)) {
-                Users.set.add(user);
+        for (Map.Entry<String, String> entry : AppConfig.userMap.entrySet()) {
+            String k = entry.getKey();
+            String v = entry.getValue();
+            if (v.equals(user)) {
+                Users.set.add(k);
                 count++;
             }
         }
         if(count == 0) {
             event.reply("존재하지 않는 스터디원 입니다.").queue();
         }
-        event.reply(user + "가 숙제완료 처리 되었습니다.").queue();
+        event.reply(user + "님이 숙제완료 처리 되었습니다.").queue();
     }
 
     private void addPrice(SlashCommandInteractionEvent event) {
