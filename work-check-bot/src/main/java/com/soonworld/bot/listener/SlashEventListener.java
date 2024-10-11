@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class SlashEventListener extends ListenerAdapter {
 
@@ -23,7 +24,7 @@ public class SlashEventListener extends ListenerAdapter {
             addPrice(event);
         }
         if("벌금확인".equals(event.getName())) {
-            event.reply("현재까지 모인 벌금 총 금액은 " + AppConfig.price + "원 입니다. 아자!").queue();
+            event.reply("현재까지 모인 벌금 총 금액은 " + AppConfig.price + "원 입니다.").queue();
         }
         if("숙제완료".equals(event.getName())) {
             completedHomework(event);
@@ -58,7 +59,10 @@ public class SlashEventListener extends ListenerAdapter {
             event.reply("오늘 기준 아무도 과제를 제출하지 않았습니다.").queue();
         }else {
             event.reply("현재까지 과제를 제출한 인원은 아래와 같습니다.").queue();
-            event.getHook().sendMessage(Users.set.toString()).queue();
+            var users = Users.set.stream()
+                    .map(m ->AppConfig.userMap.get(m))
+                    .collect(Collectors.joining(","));
+            event.getHook().sendMessage(users).queue();
         }
         event.getHook().sendMessage("과제 완료까지 남은 시간" + remainTime()).queue();
     }
